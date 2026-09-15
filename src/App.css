@@ -726,21 +726,26 @@
 .global-toast {
   position: fixed;
   z-index: 100;
+  top: 18px;
   right: 16px;
-  bottom: 18px;
   left: 16px;
+  bottom: auto;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+
   max-width: 480px;
   margin: auto;
   padding: 14px 16px;
+
   border: 1px solid var(--border-soft);
   border-radius: 10px;
   background: #171717;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, .5);
-  font-size: 12px
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+
+  font-size: 12px;
 }
 
 .global-toast--success {

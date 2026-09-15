@@ -202,29 +202,29 @@ function EmailScreen({
   const showError = touched && !isValid;
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  setTouched(true);
+    event.preventDefault();
+    setTouched(true);
 
-  if (!isValid) return;
+    if (!isValid) return;
 
-  try {
-    const result = await sendOtp(value);
+    try {
+      const result = await sendOtp(value);
 
-    if (result.success) {
-      onProceed();
-    } else {
+      if (result.success) {
+        onProceed();
+      } else {
+        onToast(
+          result.message || "Unable to send the verification code.",
+          "error",
+        );
+      }
+    } catch {
       onToast(
-        result.message || "Unable to send the verification code.",
-        "error"
+        "Unable to send the verification code. Please try again.",
+        "error",
       );
     }
-  } catch {
-    onToast(
-      "Unable to send the verification code. Please try again.",
-      "error"
-    );
-  }
-};
+  };
 
   return (
     <ScreenShell className="form-screen">
@@ -257,7 +257,7 @@ function EmailScreen({
           )}
         </div>
         <div className="form-actions">
-          <Button type="submit" disabled={!isValid} >
+          <Button type="submit" disabled={!isValid}>
             PROCEED
           </Button>
           <label className="checkbox-row">
@@ -268,11 +268,7 @@ function EmailScreen({
             />
             <span>I&apos;d like to subscribe to your newsletter</span>
           </label>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onBack}
-          >
+          <Button type="button" variant="secondary" onClick={onBack}>
             GO BACK
           </Button>
         </div>
@@ -345,57 +341,51 @@ function OtpScreen({ email, onVerified, onBack, onToast }) {
   }, [secondsRemaining]);
 
   const handleVerify = async () => {
-  if (otp.length !== 6) return;
+    if (otp.length !== 6) return;
 
-  setError("");
+    setError("");
 
-  try {
-    const result = await verifyOtp(email, otp);
+    try {
+      const result = await verifyOtp(email, otp);
 
-    if (!result.success) {
-      setError(result.message);
-      setOtp("");
-      onToast(
-        "Verification failed. Please check the OTP and try again.",
-        "error"
-      );
-      return;
+      if (!result.success) {
+        setError(result.message);
+        setOtp("");
+        onToast(
+          "Verification failed. Please check the OTP and try again.",
+          "error",
+        );
+        return;
+      }
+
+      onVerified();
+    } catch {
+      setError("Unable to verify the OTP. Please try again.");
+      onToast("Verification failed. Please try again.", "error");
     }
-
-    onVerified();
-  } catch {
-    setError("Unable to verify the OTP. Please try again.");
-    onToast(
-      "Verification failed. Please try again.",
-      "error"
-    );
-  }
-};
+  };
 
   const handleResend = async () => {
-  if (secondsRemaining > 0) return;
+    if (secondsRemaining > 0) return;
 
-  setError("");
+    setError("");
 
-  try {
-    const result = await sendOtp(email);
+    try {
+      const result = await sendOtp(email);
 
-    if (result.success) {
-      setOtp("");
-      setSecondsRemaining(60);
-    } else {
-      onToast(
-        result.message || "Unable to resend the OTP. Please try again.",
-        "error"
-      );
+      if (result.success) {
+        setOtp("");
+        setSecondsRemaining(60);
+      } else {
+        onToast(
+          result.message || "Unable to resend the OTP. Please try again.",
+          "error",
+        );
+      }
+    } catch {
+      onToast("Unable to resend the OTP. Please try again.", "error");
     }
-  } catch {
-    onToast(
-      "Unable to resend the OTP. Please try again.",
-      "error"
-    );
-  }
-};
+  };
 
   return (
     <ScreenShell className="form-screen">
@@ -429,17 +419,15 @@ function OtpScreen({ email, onVerified, onBack, onToast }) {
               className="resend-button"
               onClick={handleResend}
             >
-RESEND OTP            </button>
+              RESEND OTP{" "}
+            </button>
           )}
         </div>
         <div className="form-actions">
-          <Button
-            onClick={handleVerify}
-            disabled={otp.length !== 6}
-          >
+          <Button onClick={handleVerify} disabled={otp.length !== 6}>
             VERIFY
           </Button>
-          <Button variant="secondary" onClick={onBack} >
+          <Button variant="secondary" onClick={onBack}>
             GO BACK
           </Button>
         </div>
@@ -465,14 +453,14 @@ function UsernameScreen({ username, setUsername, onProceed, onBack, onToast }) {
   };
 
   const submit = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  setTouched(true);
+    setTouched(true);
 
-  if (!isValid) return;
+    if (!isValid) return;
 
-  onProceed();
-};
+    onProceed();
+  };
 
   return (
     <ScreenShell className="form-screen">
@@ -513,15 +501,8 @@ function UsernameScreen({ username, setUsername, onProceed, onBack, onToast }) {
           )}
         </div>
         <div className="form-actions">
-          <Button type="submit" disabled={!isValid} >
+          <Button type="submit" disabled={!isValid}>
             NEXT
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onBack}
-          >
-            GO BACK
           </Button>
         </div>
       </form>
@@ -534,18 +515,18 @@ function NameScreen({ name, setName, onProceed, onBack, onToast }) {
   //const [loading, setLoading] = useState(false);
   const value = name.trim();
   const isValid =
-    value.length >= 2 && value.length <= 50 && !/\s{2,}/.test(value);
+    value.length >= 3 && value.length <= 50 && !/\s{2,}/.test(value);
   const showError = touched && !isValid;
 
   const submit = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  setTouched(true);
+    setTouched(true);
 
-  if (!isValid) return;
+    if (!isValid) return;
 
-  onProceed();
-};
+    onProceed();
+  };
 
   return (
     <ScreenShell className="form-screen">
@@ -574,8 +555,8 @@ function NameScreen({ name, setName, onProceed, onBack, onToast }) {
             <p className="field-error" role="alert">
               {!value
                 ? "Name is required."
-                : value.length < 2
-                  ? "Please enter your name."
+                : value.length < 3
+                  ? "Name must be at least 3 characters."
                   : "Please check the spaces in your name."}
             </p>
           ) : (
@@ -585,14 +566,10 @@ function NameScreen({ name, setName, onProceed, onBack, onToast }) {
           )}
         </div>
         <div className="form-actions">
-          <Button type="submit" disabled={!isValid} >
+          <Button type="submit" disabled={!isValid}>
             NEXT
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onBack}
-          >
+          <Button type="button" variant="secondary" onClick={onBack}>
             GO BACK
           </Button>
         </div>
@@ -661,16 +638,16 @@ function DobPicker({ dob, setDob, onContinue, onClose }) {
   };
 
   const proceed = () => {
-  const validation = validate();
-  setError(validation);
+    const validation = validate();
+    setError(validation);
 
-  if (validation) return;
+    if (validation) return;
 
-  const value = `${year}-${month}-${day}`;
+    const value = `${year}-${month}-${day}`;
 
-  setDob(value);
-  onContinue(calculateAge(value));
-};
+    setDob(value);
+    onContinue(calculateAge(value));
+  };
 
   return (
     <div className="modal-backdrop">
@@ -1123,6 +1100,15 @@ function App() {
     setScreen(nextScreen);
   };
 
+  const replaceWith = (nextScreen) => {
+    window.history.replaceState(
+      { screen: nextScreen },
+      "",
+      window.location.href,
+    );
+    setScreen(nextScreen);
+  };
+
   const resetSignup = () => {
     setEmail("");
     setNewsletter(false);
@@ -1207,7 +1193,7 @@ function App() {
         return (
           <OtpScreen
             email={email}
-            onVerified={() => navigateTo(screens.USERNAME)}
+            onVerified={() => replaceWith(screens.USERNAME)}
             onBack={() => navigateTo(screens.EMAIL)}
             onToast={showToast}
           />
@@ -1218,8 +1204,6 @@ function App() {
             username={username}
             setUsername={setUsername}
             onProceed={() => navigateTo(screens.NAME)}
-            onBack={() => navigateTo(screens.OTP)}
-            onToast={showToast}
           />
         );
       case screens.NAME:
